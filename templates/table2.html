@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Table2</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body >
+    <div id="dvTable"></div>
+    <style>
+    body{
+        background-color: blueviolet;
+    }
+    </style>
+
+    <script type="text/javascript">
+    window.onload = function() {
+        GenerateTable()
+    };
+        function GenerateTable() {
+            //Build an array containing Customer records.
+            var jsonData = {
+                headcolumn: ['a','b','c'],
+                headrow: ['10:00','11:00','12:00', '13:00'],
+                tableClass: 'table table-dark',
+                body:[],
+                function2: function(e) { 
+                    console.log(e.target.dataset.bodyset);
+                },
+            }
+            //Create a HTML Table element.
+            var table = document.createElement("TABLE");
+            table.border = "1";
+            table.setAttribute("class", jsonData.tableClass)
+     
+            //Get the count of columns.
+            var columnCount = jsonData.headcolumn.length;
+            var columnData = jsonData.headcolumn;
+            var rowCount = jsonData.headrow.length;
+            var rowData = jsonData.headrow;
+     
+            //Add the header row.
+            var row = table.insertRow(-1);
+            
+            for (var i = -1; i < columnCount; i++) {
+                var headerCell = document.createElement("TH");
+                headerCell.setAttribute("scope", "col"); 
+                if (i === -1){
+                    headerCell.innerHTML = 'time';
+                } else {
+                    headerCell.innerHTML = columnData[i];
+                }
+                row.appendChild(headerCell);
+            }
+     
+            //Add the data rows.
+            for (var i = 0; i < rowCount; i++) {
+                row = table.insertRow(-1);
+                for (var j = -1; j < columnCount; j++) {
+                    var cell = row.insertCell(-1);
+                    if (j === -1) {
+                        cell.setAttribute("scope", "row"); 
+                        cell.innerHTML = rowData[i];
+                    } else {
+                        cell.setAttribute("data-bodyset", rowData[i] + '-' + columnData[j]); 
+                        cell.innerHTML = rowData[i] + ':' + columnData[j];
+                        cell.onclick = jsonData.function2;
+                    }
+                }
+            }
+     
+            var dvTable = document.getElementById("dvTable");
+            dvTable.innerHTML = "";
+            dvTable.appendChild(table);
+        }
+    </script>
+</body>
+</html>

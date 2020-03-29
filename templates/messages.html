@@ -1,0 +1,26 @@
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    
+        <!-- Trigger/Open The Modal -->
+        
+
+        <!-- The Modal -->
+        <div id="message_id" class="modal" style="display: block;">
+
+        <!-- Modal content -->
+          {% if message.tags == 'info' %}
+          <div class="modal-content bg-secondary">
+            <h6 class="text-light">{{ message }} </h6>
+          </div>
+          {% elif message.tags == 'error' %}
+          <div class="modal-content bg-danger">
+            <h6 class="text-light">{{ message }} </h6>
+          </div>
+          {% endif %}
+        </div>
+    
+    {% endfor %}
+</div>
+
+{% endif %}

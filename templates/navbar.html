@@ -1,0 +1,25 @@
+{% load static %}
+<nav class="navbar navbar-fixed-top shadow p-3 mb-5 bg-white rounded" role="navigation" style="margin-bottom: 0px; ">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="container-fluid">
+      <div class="navbar-header">
+        <div class="row">
+          <a class="navbar-brand" href="{% url 'res:list' %}" >
+            Home
+          </a>
+          <a class="navbar-brand" href="{% url 'customers:list' %}" >
+            Customers
+          </a>
+        </div>
+    </div>
+
+  <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div>
+</nav>

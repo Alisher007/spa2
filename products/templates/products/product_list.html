@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Product list</h1>
+    <ul>
+    {% for article in object_list %}
+        <li> <a href="{{article.get_absolute_url}}">{{ article }}</a> 
+            <a href="{{article.get_to_delete}}">delete</a>
+            <form method="post" >{% csrf_token %}
+                <p>delete</p>
+            </form>
+        </li>
+    {% empty %}
+        <li>No articles yet.</li>
+    {% endfor %}
+    </ul>
+
+    <h1>Product create</h1>
+    <form method="post" >{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Save">
+    </form>
+{% endblock %}

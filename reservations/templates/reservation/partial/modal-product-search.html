@@ -1,0 +1,27 @@
+<!-- PRODUCT MODAL-->
+<div id="p_modal_id" class="p_modal">
+
+  <!-- Modal content -->
+  <div class="p_modal-content">
+    <span class="p_close">&times;</span>
+    <form onkeypress="return event.keyCode!=13">
+        <div class="row">
+          <div class="col">
+            <input type="text" class="form-control" placeholder="First name" id="p_search_input" >
+          </div>
+          <div class="col">
+            <button type="submit" class="btn btn-primary mb-2" id="p_search_btn">Search</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+              <div id="p_search_place" class="border"></div>
+          </div>
+          <div class="col">
+              <ul id="p_search_place2" class="border"></ul>
+              <button type="submit" class="btn btn-primary mb-2 mt-4" id="p_search_confirm">Confirm</button>
+          </div>
+        </div>
+      </form>
+  </div>
+</div>

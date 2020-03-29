@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Welcome to SPA booking system</h1>
+                <p>today {% now 'Y-m-d' %}</p> 
+                <h3><a href="{% url 'reservation:list'  %}" style="color: #ffffff">today's reservation</a> </h3>              
+            </div>
+        </div>
+    </div>
+{% endblock %}

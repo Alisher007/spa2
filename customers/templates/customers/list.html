@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div>
+    <div class="container">
+        <div class="row">
+            <div class="col-8">
+                    <form action="{% url 'customers:add' %}" method="POST" class="shadow p-3 mb-5 bg-white rounded">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col">
+                                    <input type="text" name="name" class="form-control" placeholder="name">
+                                </div>
+                                <div class="col">
+                                    <input type="email" name="email" class="form-control" placeholder="email">
+                                </div>
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary">Add</button>
+                                </div>
+                            </div>
+                        </form>
+            </div>
+            <div class="col-12">
+                
+                        <div class="row" >
+                            <div class="col-5">
+                                <table class="table table-bordered shadow p-3 mb-5 bg-white rounded">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Delete</th>
+                                            <th scope="col">Edit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        
+                                            {% if customers %}
+                                                {%for customer1 in customers %}
+                                                <tr>
+                                                    <td >{{customer1.id}}</td>
+                                                    <td >{{customer1.name}}</td>
+                                                    <td >{{customer1.email}}</td>
+                                                    <td >
+                                                        <form action="{% url 'customers:delete' customer1.id %}"
+                                                        style="display: inline;"
+                                                        method="POST">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="btn btn-primary">Delete</button>
+                                                        </form>
+                                                    </td>
+                                                    <td onclick="customerFunction('{{customer1.id}}', '{{customer1.email}}', '{{customer1.name}}')" >
+                                                        <button type="text" class="btn btn-primary" >Edit</button>
+                                                    </td>
+                                                </tr>
+                                                {% endfor%}
+                                            {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div><!-- /.row -->
+            </div>
+        </div>
+    </div> <!-- /.container -->
+
+<!-- The Modal -->
+<div id="cl_modal_id" class="cl_modal">
+
+  <!-- Modal content -->
+  <div class="cl_modal_content">
+    <span class="cl_close">&times;</span>
+    <div class="row">
+        <div class="col-6 align-left">
+            <form class="form-inline" >
+            <div class="form-group mr-2">
+                <i id="search-icon" class="fas fa-search" aria-hidden="true"></i>
+                <input id="cl_email" class="form-control" type="email" 
+                placeholder="email" aria-label="email" name="email">
+                <input id="cl_name" class="form-control" type="text" 
+                placeholder="name" aria-label="name" name="name">
+                <input type="hidden" name="id" id="cl_id">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" id="cl_submit">submit</button>
+            </div>
+            </form>
+        </div>
+    </div><!-- row-->
+  </div><!-- cl_modal_content-->
+</div><!-- cl_modal_id-->
+
+<script src="{% static 'js/jquery.min.js' %}" type="text/javascript"></script>
+<script>
+
+
+
+// Get the modal
+var cl_modal_id = document.getElementById("cl_modal_id");
+
+// Get the button that opens the modal
+const cl_email = document.getElementById("cl_email");
+const cl_name = document.getElementById("cl_name");
+const cl_id = document.getElementById("cl_id");
+
+// Get the <span> element that cl_closes the modal
+var cl_close = document.getElementsByClassName("cl_close")[0];
+
+function customerFunction( targetid, targetemail, targetname) {
+    // res_id_modal.innerHTML = target
+    cl_email.value = targetemail;
+    cl_name.value = targetname;
+    cl_id.value = targetid;
+    cl_modal_id.style.display = "block";
+}
+
+// When the user clicks on <span> (x), cl_close the modal
+cl_close.onclick = function() {
+    cl_modal_id.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, cl_close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    cl_modal_id.style.display = "none";
+  }
+}
+
+const cl_submit = $("#cl_submit")
+const search_icon = $('#search-icon')
+const artists_div = $('#replaceable-content')
+
+function customer_ajax() {
+	$.ajax({
+		url: 'http://localhost:8000/customers/edit/' + cl_id.value + '/',
+		method: "POST",
+        data: {
+            csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+			'email': cl_email.value,
+			'name': cl_name.value
+        },
+        dataType: 'json',
+        success: function (data) {
+			console.log(data);
+        },
+        fail: function (data) {
+			console.log(data);
+			
+        }
+      });
+}
+
+cl_submit.on('click', function (e) {
+	customer_ajax()
+})
+</script>
+
+<style>
+    body {font-family: Arial, Helvetica, sans-serif;}
+    
+    /* The Modal (background) */
+    .cl_modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      padding-top: 100px; /* Location of the box */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+    
+    /* Modal Content */
+    .cl_modal_content {
+      background-color: #fefefe;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+    }
+    
+    /* The cl_close Button */
+    .cl_close {
+      color: #aaaaaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    
+    .cl_close:hover,
+    .cl_close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    </style>
+
+</div>
+{% endblock %}

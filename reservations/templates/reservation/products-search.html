@@ -1,0 +1,41 @@
+{% if products %}
+    <ul class="li-style" id="p_ul">
+        {% for product in products %}
+        <li class="p-li" >{{ product.pk }} - {{ product.name }} 
+            <button class="btn btn-primary" onclick="p_select(event, '{{ product.pk }}', '{{ product.name }}')">select</button>
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No products found.</p>
+{% endif %}
+<style>
+    .li-style{
+        list-style-type:none;
+    }
+</style>
+<script>
+    function p_select(e, params, params2) {
+        e.preventDefault();
+        id_products.value = params;
+        p_search_place2.append('<li class="p-li" id="'+ params +'" data-psearch="'+ params2 +'">'
+                + params2 +
+             '</li>');
+    }
+    p_search_place2.on( "click", "li", function( event ) {
+        event.preventDefault();
+        $( this ).remove();
+    });
+    p_search_confirm.on( "click", function( event ) {
+        event.preventDefault();
+        id_products.empty()
+        p_hidden_multiselect = []
+        for (let index = 0; index < p_search_place2.find('li').length; index++) {
+            const element = p_search_place2.find('li')[index];
+            p_hidden_multiselect.push(element.id)
+            id_products.append('<option value="'+ element.id + '" selected >'+ element.dataset.psearch + '</option>');
+        }
+        $("#p_search_place2").empty();
+        p_modal_id.style.display = "none";
+    });
+</script>

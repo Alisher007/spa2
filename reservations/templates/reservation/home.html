@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Welcome to SPA booking system</h1>
+                <p>today {% now 'Y-m-d'%}</p>
+                {% now 'Y-m-d' as current_year %}
+                <a href="{% url 'res:list' current_year %}">today's reservation</a>               
+            </div>
+        </div>
+    </div>
+    <button id="helllo">submit</button>
+
+    <script src="{% static 'js/jquery.min.js' %}" type="text/javascript"></script>
+<script>
+   $("#id_username").change(function () {
+  console.log($(this).val());
+  var form = $(this).closest("form");
+  $.ajax({
+    headers: { "X-CSRFToken": token },
+    url: form.attr("data-validate-username-url"),
+    data: form.serialize(),
+    dataType: 'json',
+    success: function (data) {
+      if (data.is_taken) {
+        alert(data.error_message);
+      }
+    }
+  });
+
+});
+</script>
+{% endblock %}

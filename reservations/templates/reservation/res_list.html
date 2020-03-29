@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+
+<div class="container" >
+
+  <div class="jumbotron jumbotron-fluid shadow p-3 mb-5 bg-white rounded">
+    <div class="container">
+      <h1 class="display-4">Massage center</h1>
+      <p class="lead">Start making reservations</p>
+    </div>
+  </div>
+
+
+    <form action="" method="GET" class="mb-2 shadow p-3 mb-5 bg-white rounded">
+        <div class="row justify-content-start" >
+            <div class="col pr-1">
+              <input type="date" id="datePicker" name="date" class="form-control" />
+            </div>
+            <div class="col ">
+                <button type="submit" class="btn btn-primary" id="datepicker_id">submit</button>
+            </div>
+            <div class="col ">
+          </div>
+        </div>
+    </form>
+       <div class="row" >
+        <table class="table table-bordered table-hover table-sm shadow p-3 mb-5 bg-white rounded">
+            <thead>
+              <tr>
+                    <th scope="col">Time</th>
+                {% if table %}
+                    {%for table1 in table %}
+                    <th scope="col">room - {{table1}}</th>
+                    {% endfor%}
+                {% endif %}
+              </tr>
+            </thead>
+            <tbody>
+                {% if avail %}
+                    {%for aaa in avail %}
+                    <tr>
+                        {%for bbb in aaa %}
+                            {%  if forloop.counter0|divisibleby:2 %}
+
+                                <td scope="row">{{bbb.time}}</td>
+                                  {% if bbb.res_id %}
+                                  <td class="{{bbb.occupied}}">
+                                  <a class="btn btn-outline-success btn-sm shadow rounded" href="{% url 'res:update' bbb.res_id %}" style="text-decoration:none;">
+                                    {{bbb.customer}}
+                                  </a>
+                                </td>
+                                  {% else %}
+                                  <td class="" onclick="res_anchor_func(event, '{{bbb.time_id}}', '{{bbb.table_id}}', '{{bbb.date}}')" style="cursor: pointer;">
+                                </td>
+                                
+                                  {% endif %}
+
+                            {% else %}
+
+                                {% if bbb.res_id %}
+                                <td class="{{bbb.occupied}}">
+                                  <a class="btn btn-outline-success btn-sm shadow rounded" href="{% url 'res:update' bbb.res_id %}" style="text-decoration:none;">
+                                    {{bbb.customer}}
+                                  </a>
+                                </td>
+                                {% else %}
+                                <td class="" onclick="res_anchor_func(event, '{{bbb.time_id}}', '{{bbb.table_id}}', '{{bbb.date}}')" style="cursor: pointer;">
+                                </td>
+                                {% endif %}
+
+                            {% endif %}
+
+                        {% endfor%}
+                    </tr>
+                    {% endfor%}
+                {% endif %}
+            </tbody>
+          </table>
+          <p hidden></p>
+      </div><!-- /.row -->
+    </div><!-- /.container -->
+    
+  
+  <script>
+
+  var datePicker = document.getElementById("datePicker");  
+  if (window.location.pathname.split('/')[2] == undefined) {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    today = yyyy + '-' + mm + '-' + dd;
+    datePicker.value = today
+  }else{
+    datePicker.value = window.location.pathname.split('/')[2];
+  }
+  
+  // window.onload = function() {
+  //     datePicker.value = window.location.pathname.split('/')[3];
+  //   }
+  
+  document.getElementById("datepicker_id").onclick = function (e) {
+    e.preventDefault()
+    location.href = "{% url 'res:list' 12345 %}".replace(/12345/, datePicker.value.toString());
+    // 2020-03-19
+    };
+    function res_anchor_func(e, time, table, date) {
+      e.preventDefault()
+      
+      window.location = window.location.protocol + '//' + window.location.host + "{% url 'res:create' %}" + "?time=" + time + "&table=" + table + "&date=" + date ;
+    }
+  </script>
+{% endblock %}

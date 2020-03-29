@@ -1,0 +1,14 @@
+{% if artists %}
+    <ul class="li-style">
+        {% for artist in artists %}
+        <li>{{ artist.pk }} - {{ artist.name }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No artists found.</p>
+{% endif %}
+<style>
+    .li-style{
+        list-style-type:none;
+    }
+</style>

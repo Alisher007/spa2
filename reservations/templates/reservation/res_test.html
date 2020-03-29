@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <form method='POST' novalidate>{% csrf_token %}
+                    <div class="row">
+                        <div class="col">
+                            <div id="div_id_customerid" class="form-group">
+                                <label for="id_customerid" class=" requiredField">
+                                    Customer<span class="asteriskField">*</span>
+                                </label>
+                                <div class="">
+                                    <select name="customerid" class="select form-control is-invalid" required="" id="id_customerid" >
+                                        <option value="1" selected="">a@a.com</option>
+                                    </select>
+                                    <button class="btn btn-primary" onclick="cs_select_id(event)">select</button>   
+                                    <!-- {{ form.customerid.errors }} -->
+                                </div> <!-- class="" -->
+                            </div> <!-- div_id_customerid -->
+                        </div>
+                        <div class="col">
+                            <div id="div_id_products" class="form-group">
+                                <label for="id_products" class=" requiredField">
+                                    Products<span class="asteriskField">*</span>
+                                </label>
+                                <div class="">
+                                    <select name="products" class="selectmultiple form-control is-invalid" required="" id="id_products" multiple>
+                                        <option value="1" selected="">neck</option>
+                                    </select>
+                                    <button class="btn btn-primary" onclick="cs_products_id(event)">select</button> 
+                                    <!-- <p id="error_1_id_products" class="invalid-feedback">{{ form.products.errors }}</p> -->
+                                    
+                                </div> <!-- class="" -->
+                            </div> <!-- div_id_products -->
+                        </div>
+                      </div>
+                      {{ form.roomid|as_crispy_field }}
+                      {{ form.products|as_crispy_field }}
+
+                      {{ form.arrdate|as_crispy_field }}
+                      {{ form.starttime|as_crispy_field }}
+                      {{ form.endtime|as_crispy_field }}
+                    <input type='submit' value='Save' onclick="res_create_submit(event)"/>
+                </form>               
+            </div>
+        </div>
+    </div>
+
+<!-- CUSTOMER MODAL-->
+<div id="c_modal_id" class="c_modal">
+
+  <!-- Modal content -->
+  <div class="c_modal-content">
+    <span class="c_close">&times;</span>
+    <form onkeypress="return event.keyCode!=13">
+        <div class="row">
+          <div class="col">
+            <input type="text" class="form-control" placeholder="First name" id="c_search_input" >
+            <div id="c_search_place"></div>
+          </div>
+          <div class="col">
+            <button type="submit" class="btn btn-primary mb-2" id="c_search_btn">Confirm identity</button>
+          </div>
+        </div>
+      </form>
+  </div>
+</div>
+
+<!-- PRODUCT MODAL-->
+<div id="p_modal_id" class="p_modal">
+
+    <!-- Modal content -->
+    <div class="p_modal-content">
+      <span class="p_close">&times;</span>
+      <form onkeypress="return event.keyCode!=13">
+          <div class="row">
+            <div class="col">
+              <input type="text" class="form-control" placeholder="First name" id="p_search_input" >
+            </div>
+            <div class="col">
+              <button type="submit" class="btn btn-primary mb-2" id="p_search_btn">Search</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+                <div id="p_search_place" class="border"></div>
+            </div>
+            <div class="col">
+                <ul id="p_search_place2" class="border"></ul>
+                <button type="submit" class="btn btn-primary mb-2 mt-4" id="p_search_confirm">Confirm</button>
+            </div>
+          </div>
+        </form>
+    </div>
+  </div>
+
+<script src="{% static 'js/jquery.min.js' %}" type="text/javascript"></script>
+<script>
+
+const id_arrdate = $("#id_arrdate");
+id_arrdate.prop({type:"date"});
+
+const c_search_input = $("#c_search_input");
+const c_search_btn = $("#c_search_btn");
+const c_search_place = $("#c_search_place");
+
+c_search_btn.on('click', function (e) {
+    e.preventDefault();
+	$.ajax({
+		url: 'http://localhost:8000/res/search/',
+		method: "GET",
+        data: {
+			'q': c_search_input.val()
+        },
+        dataType: 'json',
+        success: function (data) {
+            console.log(data['html_customers-search']);
+            c_search_place.html(data['html_customers-search']);
+        },
+        fail: function (data) {
+			console.log(data);
+			
+        }
+      });
+})
+
+// CUSTOMER MODAL
+var c_modal_id = document.getElementById("c_modal_id");
+
+// Get the button that opens the modal
+const id_customerid = $("#id_customerid");
+
+// Get the <span> element that closes the modal
+var c_close = document.getElementsByClassName("c_close")[0];
+
+// When the user clicks the button, open the modal 
+
+function cs_select_id(e) {
+    e.preventDefault()
+    c_modal_id.style.display = "block";
+}
+function res_create_submit(e) {
+    if ($('#id_starttime').val() >= $('#id_endtime').val()) {
+        e.preventDefault()
+        alert('the end time should be higher than the start time')
+    }   
+    
+}
+
+
+// When the user clicks on <span> (x), close the modal
+c_close.onclick = function() {
+    c_modal_id.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == c_modal_id) {
+    c_modal_id.style.display = "none";
+  }
+}
+
+
+// PRODUCT MODAL
+const p_search_input = $("#p_search_input");
+const p_search_btn = $("#p_search_btn");
+const p_search_place = $("#p_search_place");
+const p_search_place2 = $("#p_search_place2");
+const p_search_confirm = $("#p_search_confirm");
+
+p_search_btn.on('click', function (e) {
+    e.preventDefault();
+	$.ajax({
+		url: 'http://localhost:8000/res/product-search/',
+		method: "GET",
+        data: {
+			'q': p_search_input.val()
+        },
+        dataType: 'json',
+        success: function (data) {
+            p_search_place.html(data['html_products-search']);
+        },
+        fail: function (data) {
+			console.log(data);
+			
+        }
+      });
+})
+
+var p_modal_id = document.getElementById("p_modal_id");
+
+// Get the button that opens the modal
+const id_products = $("#id_products");
+
+// Get the <span> element that closes the modal
+var p_close = document.getElementsByClassName("p_close")[0];
+
+// When the user clicks the button, open the modal 
+
+function cs_products_id(e) {
+    e.preventDefault()
+    p_modal_id.style.display = "block";
+}
+function res_create_submit(e) {
+    if ($('#id_starttime').val() >= $('#id_endtime').val()) {
+        e.preventDefault()
+        alert('the end time should be higher than the start time')
+    }   
+    
+}
+
+
+// When the user clicks on <span> (x), close the modal
+p_close.onclick = function() {
+    p_modal_id.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == p_modal_id) {
+    p_modal_id.style.display = "none";
+  }
+}
+</script>
+<style>
+
+/* The Modal (background) */
+.c_modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.c_modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.c_close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.c_close:hover,
+.c_close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+/* The Modal (background) */
+.p_modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.p_modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.p_close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.p_close:hover,
+.p_close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>
+{% endblock %}
+

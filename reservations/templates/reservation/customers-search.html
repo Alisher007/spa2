@@ -1,0 +1,27 @@
+{% if customers %}
+    <ul class="li-style" id="cs_ul">
+        {% for customer in customers %}
+        <li class="cs-li" >{{ customer.pk }} - {{ customer.name }} 
+            <button class="btn btn-primary" onclick="cs_select(event, '{{ customer.pk }}', '{{ customer.email }}')">select</button>
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No customers found.</p>
+{% endif %}
+<style>
+    .li-style{
+        list-style-type:none;
+    }
+    .hova {
+    background-color: pink;
+}
+</style>
+<script>
+    function cs_select(e, params, params2) {
+        e.preventDefault();
+        id_customerid.value = params;
+        id_customerid.empty().append('<option value="'+ params + '">'+ params2 + '</option>');
+        c_modal_id.style.display = "none";
+    }
+</script>
